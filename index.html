@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clarweb — Tecnologia que Trabalha por Si</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --ink:     #0d0f14;
+    --ink-2:   #1e2330;
+    --ink-3:   #2d3347;
+    --muted:   #7a8299;
+    --light:   #f4f5f8;
+    --white:   #ffffff;
+    --clay:    #c97b5a;
+    --clay-l:  #e8a882;
+    --clay-d:  #a05a38;
+    --gold:    #d4a853;
+    --border:  rgba(255,255,255,0.08);
+    --r:       12px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--ink);
+    color: var(--white);
+    overflow-x: hidden;
+}
+
+/* ── Noise texture overlay ── */
+body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* ══ NAV ══════════════════════════════════════════════════════════════ */
+nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 20px 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(13,15,20,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+    display: flex; align-items: center; gap: 12px;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 700; color: var(--white);
+    text-decoration: none;
+}
+.nav-logo img { height: 36px; }
+.nav-links { display: flex; align-items: center; gap: 36px; }
+.nav-links a {
+    font-size: 13px; font-weight: 500; color: var(--muted);
+    text-decoration: none; transition: color 0.2s; letter-spacing: 0.3px;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-cta {
+    padding: 10px 24px; border-radius: 8px;
+    background: var(--clay); color: var(--white) !important;
+    font-weight: 600 !important; font-size: 13px !important;
+    transition: background 0.2s !important;
+}
+.nav-cta:hover { background: var(--clay-d) !important; color: var(--white) !important; }
+
+/* ══ HERO ═════════════════════════════════════════════════════════════ */
+.hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 140px 40px 80px;
+    position: relative; overflow: hidden;
+}
+.hero-glow {
+    position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none;
+}
+.hero-glow-1 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(201,123,90,0.18) 0%, transparent 70%);
+    top: -100px; left: -100px;
+    animation: floatGlow 8s ease-in-out infinite;
+}
+.hero-glow-2 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(212,168,83,0.12) 0%, transparent 70%);
+    bottom: -50px; right: -50px;
+    animation: floatGlow 10s ease-in-out infinite reverse;
+}
+@keyframes floatGlow {
+    0%, 100% { transform: translate(0,0); }
+    50%       { transform: translate(30px, -30px); }
+}
+.hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--clay); border: 1px solid rgba(201,123,90,0.3);
+    padding: 6px 16px; border-radius: 20px; margin-bottom: 28px;
+    background: rgba(201,123,90,0.08);
+    animation: fadeUp 0.6s 0.1s ease both;
+}
+.hero-eyebrow span { width: 6px; height: 6px; border-radius: 50%; background: var(--clay); display: block; }
+.hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 7vw, 86px);
+    font-weight: 900; line-height: 1.05;
+    color: var(--white); margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.2s ease both;
+}
+.hero h1 em {
+    font-style: italic; color: var(--clay);
+    position: relative;
+}
+.hero h1 em::after {
+    content: '';
+    position: absolute; bottom: -4px; left: 0; right: 0;
+    height: 2px; background: linear-gradient(90deg, var(--clay), transparent);
+}
+.hero-sub {
+    font-size: 18px; color: var(--muted); line-height: 1.7;
+    max-width: 580px; margin: 0 auto 48px;
+    animation: fadeUp 0.6s 0.3s ease both;
+}
+.hero-btns {
+    display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.4s ease both;
+}
+.btn-primary {
+    padding: 14px 32px; border-radius: 10px;
+    background: var(--clay); color: var(--white);
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    transition: all 0.2s; border: none; cursor: pointer;
+    box-shadow: 0 8px 24px rgba(201,123,90,0.35);
+}
+.btn-primary:hover { background: var(--clay-d); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(201,123,90,0.45); }
+.btn-ghost {
+    padding: 14px 32px; border-radius: 10px;
+    background: transparent; color: var(--white);
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s;
+}
+.btn-ghost:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.4); }
+
+.hero-stats {
+    display: flex; gap: 60px; justify-content: center; margin-top: 80px;
+    padding-top: 48px; border-top: 1px solid var(--border);
+    animation: fadeUp 0.6s 0.5s ease both;
+}
+.hero-stat-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px; font-weight: 700; color: var(--white);
+}
+.hero-stat-val span { color: var(--clay); }
+.hero-stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; letter-spacing: 0.5px; }
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ══ SECTION BASE ═════════════════════════════════════════════════════ */
+section { padding: 100px 60px; position: relative; z-index: 1; }
+.section-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--clay); margin-bottom: 16px;
+}
+.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 44px); font-weight: 700; color: var(--white);
+    line-height: 1.15; margin-bottom: 16px;
+}
+.section-sub {
+    font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 520px;
+}
+.max-w { max-width: 1200px; margin: 0 auto; }
+
+/* ══ SOBRE ════════════════════════════════════════════════════════════ */
+.sobre {
+    background: var(--ink-2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+.sobre-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+}
+.sobre-visual {
+    position: relative;
+}
+.sobre-card {
+    background: var(--ink-3); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px;
+    position: relative; overflow: hidden;
+}
+.sobre-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--clay), var(--gold));
+}
+.sobre-card-ico {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: rgba(201,123,90,0.15); color: var(--clay);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 16px;
+}
+.sobre-card h4 { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+.sobre-card p  { font-size: 13px; color: var(--muted); line-height: 1.7; }
+.sobre-cards { display: flex; flex-direction: column; gap: 16px; }
+.sobre-float {
+    position: absolute; top: -20px; right: -20px;
+    width: 120px; height: 120px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,123,90,0.20) 0%, transparent 70%);
+    filter: blur(20px); pointer-events: none;
+}
+.sobre-text p { font-size: 16px; color: var(--muted); line-height: 1.8; margin-bottom: 20px; }
+.sobre-text strong { color: var(--white); }
+
+/* ══ PRODUTOS ═════════════════════════════════════════════════════════ */
+.produtos-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 60px;
+}
+.produto-card {
+    background: var(--ink-2); border: 1px solid var(--border);
+    border-radius: 20px; overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+    text-decoration: none; display: block;
+}
+.produto-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.4);
+}
+.produto-card-head {
+    padding: 40px 40px 32px;
+    position: relative; overflow: hidden;
+}
+.produto-card-head.blue  { background: linear-gradient(135deg, #0a1628, #0d2545); }
+.produto-card-head.earth { background: linear-gradient(135deg, #1a0f08, #2d1a0e); }
+.produto-card-glow {
+    position: absolute; width: 200px; height: 200px; border-radius: 50%;
+    filter: blur(60px); pointer-events: none; top: -40px; right: -40px;
+}
+.produto-card-glow.blue  { background: rgba(0,156,222,0.25); }
+.produto-card-glow.earth { background: rgba(201,123,90,0.25); }
+.produto-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 20px; margin-bottom: 20px;
+}
+.produto-tag.blue  { background: rgba(0,156,222,0.15); color: #60c8f0; border: 1px solid rgba(0,156,222,0.25); }
+.produto-tag.earth { background: rgba(201,123,90,0.15); color: var(--clay-l); border: 1px solid rgba(201,123,90,0.25); }
+.produto-card-head h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px; font-weight: 700; color: var(--white); margin-bottom: 10px;
+}
+.produto-card-head p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.produto-card-body { padding: 28px 40px 36px; }
+.produto-features { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.produto-features li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: rgba(255,255,255,0.7);
+}
+.produto-features li::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--clay); flex-shrink: 0;
+}
+.produto-link {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 24px; font-size: 13px; font-weight: 600;
+    text-decoration: none; transition: gap 0.2s;
+}
+.produto-link.blue  { color: #60c8f0; }
+.produto-link.earth { color: var(--clay-l); }
+.produto-link:hover { gap: 14px; }
+
+/* ══ TECNOLOGIAS ══════════════════════════════════════════════════════ */
+.tec { background: var(--ink-2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.tec-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+    margin-top: 60px; border-radius: 16px; overflow: hidden;
+    border: 1px solid var(--border);
+}
+.tec-item {
+    background: var(--ink-3); padding: 40px 36px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+}
+.tec-item:hover { background: #262d3f; }
+.tec-item:nth-child(3n) { border-right: none; }
+.tec-item:nth-last-child(-n+3) { border-bottom: none; }
+.tec-ico {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 20px;
+}
+.tec-item h4 { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 10px; }
+.tec-item p  { font-size: 13px; color: var(--muted); line-height: 1.7; }
+
+/* ══ CTA ══════════════════════════════════════════════════════════════ */
+.cta-section {
+    text-align: center; padding: 120px 60px;
+    background: linear-gradient(135deg, #0d0f14 0%, #1a1008 50%, #0d0f14 100%);
+    border-top: 1px solid var(--border);
+    position: relative; overflow: hidden;
+}
+.cta-glow {
+    position: absolute; width: 800px; height: 400px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(201,123,90,0.12) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    filter: blur(40px); pointer-events: none;
+}
+.cta-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 56px); font-weight: 700;
+    color: var(--white); margin-bottom: 20px; position: relative; z-index: 1;
+}
+.cta-section p {
+    font-size: 17px; color: var(--muted); margin-bottom: 40px;
+    position: relative; z-index: 1;
+}
+
+/* ══ FOOTER ═══════════════════════════════════════════════════════════ */
+footer {
+    background: var(--ink-2); border-top: 1px solid var(--border);
+    padding: 60px; display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 24px;
+}
+.footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; font-weight: 700; color: var(--white);
+    display: flex; align-items: center; gap: 10px;
+}
+.footer-logo img { height: 28px; }
+.footer-links { display: flex; gap: 28px; }
+.footer-links a { font-size: 12px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--white); }
+.footer-copy { font-size: 12px; color: #475569; }
+
+/* ══ SCROLL REVEAL ════════════════════════════════════════════════════ */
+.reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding: 70px 24px; }
+    .sobre-grid { grid-template-columns: 1fr; gap: 40px; }
+    .produtos-grid { grid-template-columns: 1fr; }
+    .tec-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 32px; flex-wrap: wrap; }
+    footer { padding: 40px 24px; flex-direction: column; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <a href="#" class="nav-logo">
+        <img src="logo_clarweb_90x150.png" alt="Clarweb">
+    </a>
+    <div class="nav-links">
+        <a href="#sobre">Sobre</a>
+        <a href="#produtos">Produtos</a>
+        <a href="#tecnologias">Tecnologias</a>
+        <a href="#contacto">Contacto</a>
+        <a href="mailto:geral@clarweb.com" class="nav-cta">Falar Connosco</a>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+    <div class="hero-eyebrow"><span></span> Clarweb Tecnologias Web</div>
+    <h1>Tecnologia que<br><em>Trabalha por Si</em></h1>
+    <p class="hero-sub">Desenvolvemos soluções digitais com inteligência artificial, automação e CRM para organizações que querem crescer sem complicações.</p>
+    <div class="hero-btns">
+        <a href="#produtos" class="btn-primary">Conhecer Produtos</a>
+        <a href="#contacto" class="btn-ghost">Falar com a Equipa</a>
+    </div>
+    <div class="hero-stats">
+        <div>
+            <div class="hero-stat-val">2<span>+</span></div>
+            <div class="hero-stat-label">Produtos Ativos</div>
+        </div>
+        <div>
+            <div class="hero-stat-val">IA<span>.</span></div>
+            <div class="hero-stat-label">Automação Inteligente</div>
+        </div>
+        <div>
+            <div class="hero-stat-val">PT<span>.</span></div>
+            <div class="hero-stat-label">Feito em Portugal</div>
+        </div>
+    </div>
+</section>
+
+<!-- SOBRE -->
+<section class="sobre" id="sobre">
+    <div class="max-w">
+        <div class="sobre-grid">
+            <div class="sobre-text reveal">
+                <div class="section-label">Sobre a Clarweb</div>
+                <h2 class="section-title">Construímos o futuro<br>das organizações</h2>
+                <p>A <strong>Clarweb</strong> é uma empresa portuguesa de tecnologia especializada em desenvolvimento de software, automação por inteligência artificial e soluções digitais para associações, empresas e organizações.</p>
+                <p>Acreditamos que a tecnologia deve simplificar — não complicar. Por isso criamos ferramentas práticas, intuitivas e poderosas que se adaptam ao ritmo de cada organização.</p>
+                <a href="#contacto" class="btn-primary" style="margin-top:12px;display:inline-block;">Saber Mais</a>
+            </div>
+            <div class="sobre-visual reveal">
+                <div class="sobre-float"></div>
+                <div class="sobre-cards">
+                    <div class="sobre-card">
+                        <div class="sobre-card-ico">🤖</div>
+                        <h4>Automação com IA</h4>
+                        <p>Implementamos inteligência artificial para automatizar processos repetitivos, notificações, cobranças e análises preditivas.</p>
+                    </div>
+                    <div class="sobre-card">
+                        <div class="sobre-card-ico">🔄</div>
+                        <h4>Tecnologia de Periodicidade</h4>
+                        <p>Sistemas avançados de gestão de ciclos recorrentes — pagamentos, contratos, renovações e alertas automáticos.</p>
+                    </div>
+                    <div class="sobre-card">
+                        <div class="sobre-card-ico">📊</div>
+                        <h4>CRM Integrado</h4>
+                        <p>Plataformas de gestão de relações com clientes, membros e parceiros, com visibilidade total em tempo real.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRODUTOS -->
+<section id="produtos">
+    <div class="max-w">
+        <div class="reveal">
+            <div class="section-label">Os Nossos Produtos</div>
+            <h2 class="section-title">Soluções criadas<br>para o mundo real</h2>
+            <p class="section-sub">Cada produto nasce de uma necessidade real — construído com tecnologia de ponta e pensado para quem o usa todos os dias.</p>
+        </div>
+        <div class="produtos-grid">
+
+            <div class="produto-card reveal" style="transition-delay:0.1s;">
+                <div class="produto-card-head blue">
+                    <div class="produto-card-glow blue"></div>
+                    <div class="produto-tag blue">● Software de Gestão</div>
+                    <h3>Filework</h3>
+                    <p>Plataforma completa de gestão de contratos, pessoas e finanças com periodicidade automática e IA integrada.</p>
+                </div>
+                <div class="produto-card-body">
+                    <ul class="produto-features">
+                        <li>Gestão de contratos com periodicidade configurável</li>
+                        <li>Automação por inteligência artificial</li>
+                        <li>CRM de membros, pessoas e empresas</li>
+                        <li>Módulo financeiro com lançamentos recorrentes</li>
+                        <li>Gestão de tarefas e eventos</li>
+                        <li>Secções independentes com permissões</li>
+                    </ul>
+                    <a href="https://filework.pt" target="_blank" class="produto-link blue">
+                        Conhecer o Filework →
+                    </a>
+                </div>
+            </div>
+
+            <div class="produto-card reveal" style="transition-delay:0.2s;">
+                <div class="produto-card-head earth">
+                    <div class="produto-card-glow earth"></div>
+                    <div class="produto-tag earth">● Portal de Eventos</div>
+                    <h3>Onde Há Festa</h3>
+                    <p>Portal de descoberta e divulgação de eventos culturais, festas e experiências em Portugal.</p>
+                </div>
+                <div class="produto-card-body">
+                    <ul class="produto-features">
+                        <li>Descoberta de eventos por localização</li>
+                        <li>Divulgação para organizadores</li>
+                        <li>Agenda cultural atualizada</li>
+                        <li>Alcance nacional de eventos locais</li>
+                        <li>Portal dedicado ao lazer e cultura</li>
+                        <li>Integração com redes sociais</li>
+                    </ul>
+                    <a href="https://ondehafesta.com/portal" target="_blank" class="produto-link earth">
+                        Visitar o Portal →
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- TECNOLOGIAS -->
+<section class="tec" id="tecnologias">
+    <div class="max-w">
+        <div class="reveal">
+            <div class="section-label">Tecnologias</div>
+            <h2 class="section-title">O que nos diferencia</h2>
+            <p class="section-sub">Combinamos as melhores tecnologias modernas com uma abordagem prática orientada para resultados.</p>
+        </div>
+        <div class="tec-grid reveal">
+            <div class="tec-item">
+                <div class="tec-ico" style="background:rgba(201,123,90,0.15);color:var(--clay);">🤖</div>
+                <h4>Inteligência Artificial</h4>
+                <p>Automação inteligente de processos, análise preditiva de dados e assistentes virtuais integrados nas nossas plataformas.</p>
+            </div>
+            <div class="tec-item">
+                <div class="tec-ico" style="background:rgba(212,168,83,0.15);color:var(--gold);">🔄</div>
+                <h4>Periodicidade Avançada</h4>
+                <p>Motor proprietário de gestão de ciclos recorrentes — pagamentos, contratos, renovações e alertas com configuração granular.</p>
+            </div>
+            <div class="tec-item">
+                <div class="tec-ico" style="background:rgba(99,102,241,0.15);color:#818cf8;">📊</div>
+                <h4>CRM & Gestão</h4>
+                <p>Plataformas de gestão de relações com total visibilidade sobre membros, clientes, contratos e histórico de interações.</p>
+            </div>
+            <div class="tec-item">
+                <div class="tec-ico" style="background:rgba(16,185,129,0.15);color:#34d399;">⚡</div>
+                <h4>Tempo Real</h4>
+                <p>Tecnologia WebSocket para dashboards e notificações em tempo real — dados sempre actualizados sem recarregar a página.</p>
+            </div>
+            <div class="tec-item">
+                <div class="tec-ico" style="background:rgba(59,130,246,0.15);color:#60a5fa;">☁️</div>
+                <h4>Cloud Native</h4>
+                <p>Infraestrutura escalável em cloud com alta disponibilidade, backups automáticos e segurança de nível empresarial.</p>
+            </div>
+            <div class="tec-item">
+                <div class="tec-ico" style="background:rgba(239,68,68,0.15);color:#f87171;">🔒</div>
+                <h4>Segurança & RGPD</h4>
+                <p>Conformidade total com o RGPD, autenticação segura, encriptação de dados e controlo granular de permissões.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contacto">
+    <div class="cta-glow"></div>
+    <div class="section-label" style="text-align:center;">Vamos Trabalhar Juntos</div>
+    <h2>Pronto para modernizar<br>a sua organização?</h2>
+    <p>Fale connosco e descubra como a Clarweb pode transformar os seus processos.</p>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;">
+        <a href="mailto:geral@clarweb.com" class="btn-primary">geral@clarweb.com</a>
+        <a href="https://filework.pt/sign_up" target="_blank" class="btn-ghost">Experimentar o Filework</a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="footer-logo">
+        <img src="logo_clarweb_90x150.png" alt="Clarweb">
+        Clarweb
+    </div>
+    <div class="footer-links">
+        <a href="https://filework.pt">Filework</a>
+        <a href="https://ondehafesta.com/portal">Onde Há Festa</a>
+        <a href="mailto:geral@clarweb.com">Contacto</a>
+    </div>
+    <div class="footer-copy">© 2026 Clarweb Tecnologias Web · Portugal</div>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
